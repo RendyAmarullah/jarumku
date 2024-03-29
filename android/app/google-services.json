@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "656760551321",
+    "firebase_url": "https://jarum-f9fc3-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "jarum-f9fc3",
+    "storage_bucket": "jarum-f9fc3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656760551321:android:7e7f537a9292e53f558508",
+        "android_client_info": {
+          "package_name": "com.example.project_jarum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZIMhnfnk6h2Is0iRWGPKvQo3yi3i0-7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
