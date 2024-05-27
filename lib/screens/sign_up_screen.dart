@@ -3,14 +3,14 @@ import 'package:flutter/widgets.dart';
 import 'package:project_jarum/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _rememberMe = false;
@@ -70,6 +70,42 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
+                      labelText: "Email",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      labelText: "Full Name",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      labelText: "Phone Number",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
                       labelText: "Username",
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black, width: 2.0),
@@ -82,14 +118,29 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: "Password",
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 2.0),
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
+                      labelText: "Password",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      labelText: "Re-Enter Password",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                
                 const SizedBox(
                   height: 50,
                 ),
@@ -124,10 +175,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.pushNamed(context, '/signin');
                     },
-                    child: const Text('Belum punya akun? Daftar di sini.')),
-
+                    child: const Text('Sudah Punya Akun? Login Di sini')),
                     
               ],
             ),

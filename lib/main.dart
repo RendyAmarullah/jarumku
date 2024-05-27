@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:project_jarum/screens/sign_in_screen.dart';
+import 'package:project_jarum/screens/sign_up_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -24,6 +25,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: SignInScreen(),
+       initialRoute: '/',
+      routes: {
+        '/signup': (context) => SignUpScreen(),
+        '/signin': (context) => SignInScreen(),
+        
+      },
     );
   }
 }
