@@ -1,18 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_jarum/main.dart';
+import 'package:project_jarum/screens/sign_in_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignUpScreen> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _SignUpScreenState extends State<SignUpScreen> {
+  final  _emailController = TextEditingController();
+  final  _passwordController = TextEditingController();
   bool _rememberMe = false;
 
 
@@ -27,7 +29,7 @@ class _SignInScreenState extends State<SignUpScreen> {
     setState(() {
       _rememberMe = prefs.getBool('remember_me') ?? false;
       if (_rememberMe) {
-        _usernameController.text = prefs.getString('username') ?? '';
+        _emailController.text = prefs.getString('username') ?? '';
         _passwordController.text = prefs.getString('password') ?? '';
       }
     });
@@ -37,7 +39,7 @@ class _SignInScreenState extends State<SignUpScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('remember_me', _rememberMe);
     if (_rememberMe) {
-      prefs.setString('username', _usernameController.text);
+      prefs.setString('username', _emailController.text);
       prefs.setString('password', _passwordController.text);
     } else {
       prefs.remove('username');
@@ -62,13 +64,14 @@ class _SignInScreenState extends State<SignUpScreen> {
             padding: const EdgeInsets.all(32.0),
             child: Column(
               children: [
-                const Image(
-                image: AssetImage("images/9.PNG"),
+                Center(
+                child: Image.asset('images/9.png'),
               ),
                 SizedBox(
                   height: 20,
                 ),
                 TextFormField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                       labelText: "Email",
                       border: UnderlineInputBorder(
@@ -117,6 +120,7 @@ class _SignInScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
+                  controller: _passwordController,
                   decoration: InputDecoration(
                       labelText: "Password",
                       border: UnderlineInputBorder(
@@ -164,7 +168,19 @@ class _SignInScreenState extends State<SignUpScreen> {
                 ),
                 
                 ElevatedButton(
-                  onPressed: main,
+                  onPressed: () async { 
+                     try {
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => const SignInScreen()),
+                    );
+                  } catch (error) {
+                    print(error.toString());
+                  }
+                  },
                   child: const Text('Sign In'),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(

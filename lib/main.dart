@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:project_jarum/screens/home_screen.dart';
 import 'package:project_jarum/screens/sign_in_screen.dart';
 import 'package:project_jarum/screens/sign_up_screen.dart';
 import 'firebase_options.dart';
@@ -24,7 +26,16 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
       ),
-      home: SignInScreen(),
+      home: StreamBuilder(
+         stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData)
+              return const SignUpScreen();
+            else {
+              return const SignInScreen();
+            }
+          }
+      ),
        initialRoute: '/',
       routes: {
         '/signup': (context) => SignUpScreen(),
