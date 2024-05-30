@@ -13,13 +13,12 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final  _emailController = TextEditingController();
-  final  _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _rememberMe = false;
 
-
   @override
-  void initState(){ 
+  void initState() {
     super.initState();
     _loadUserInfo();
   }
@@ -35,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-   _saveUserInfo() async {
+  _saveUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('remember_me', _rememberMe);
     if (_rememberMe) {
@@ -53,8 +52,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // Navigasi ke halaman berikutnya jika login berhasil
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +62,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               children: [
                 Center(
-                child: Image.asset('images/9.png'),
-              ),
+                  child: Image.asset('images/9.png'),
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -144,44 +141,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                
                 const SizedBox(
                   height: 50,
                 ),
-               
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text('Remember Me'),
                     Checkbox(
-                  value: _rememberMe,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _rememberMe = newValue!;
-                    });
-                  },
-                ),
-                
-
+                      value: _rememberMe,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _rememberMe = newValue!;
+                        });
+                      },
+                    ),
                   ],
-
                 ),
-                
                 ElevatedButton(
-                  onPressed: () async { 
-                     try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    );
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => const SignInScreen()),
-                    );
-                  } catch (error) {
-                    print(error.toString());
-                  }
+                  onPressed: () async {
+                    try {
+                      await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                      );
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => const SignInScreen()),
+                      );
+                    } catch (error) {
+                      print(error.toString());
+                    }
                   },
-                  child: const Text('Sign In'),
+                  child: const Text('Sign Up'),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero))),
@@ -194,7 +187,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushNamed(context, '/signin');
                     },
                     child: const Text('Sudah Punya Akun? Login Di sini')),
-                    
               ],
             ),
           ),

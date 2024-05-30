@@ -64,13 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        backgroundColor: HexColor("#9AD0D3"),
+        backgroundColor: Colors.teal[200],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: HexColor("#9AD0D3"),
+            color: Colors.teal[200],
             alignment: Alignment.center,
             height: 100,
             padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Username",
+                              "Username1",
                               style: TextStyle(
                                 fontSize: 18,
                               ),
@@ -169,13 +169,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Username",
+                              "Username2",
                               style: TextStyle(
                                 fontSize: 18,
                               ),
                             ),
                             Text(
-                              "089580808080",
+                              "081290909090",
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -210,6 +210,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              children: [
+                Text(
+                  "Services",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, // 3 columns
+                  crossAxisSpacing: 8.0, // space between columns
+                  mainAxisSpacing: 8.0, // space between rows
+                  childAspectRatio: 1.0, // Aspect ratio of each grid item
+                ),
+                itemCount: 9, // total 9 items
+                itemBuilder: (context, index) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      // Menampilkan pesan di konsol saat tombol ditekan
+                      print('Button ${index + 1} pressed');
+                    },
+                    child: Text('Button ${index + 1}'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor("#9AD0D3"), // Button color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          )
         ],
       ),
     );
