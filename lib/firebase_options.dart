@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -75,11 +72,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBY3pDqWV_GkX8rGinPjWSCrHEzy_S90VQ',
-    appId: '1:656760551321:ios:0b5afbe43da27416558508',
+    appId: '1:656760551321:ios:4208778a5223371b558508',
     messagingSenderId: '656760551321',
     projectId: 'jarum-f9fc3',
     databaseURL: 'https://jarum-f9fc3-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'jarum-f9fc3.appspot.com',
-    iosBundleId: 'com.example.projectJarum.RunnerTests',
+    iosBundleId: 'com.example.projectJarum',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBuJOPQ5bLUHB9PPgLRdW8_T5xfVqOaC_A',
+    appId: '1:656760551321:web:f617d8657e363831558508',
+    messagingSenderId: '656760551321',
+    projectId: 'jarum-f9fc3',
+    authDomain: 'jarum-f9fc3.firebaseapp.com',
+    databaseURL: 'https://jarum-f9fc3-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'jarum-f9fc3.appspot.com',
+    measurementId: 'G-TNPVQ1FT5R',
+  );
+
 }

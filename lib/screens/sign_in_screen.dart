@@ -15,12 +15,11 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
-  final  _passwordController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _rememberMe = false;
 
-
   @override
-  void initState(){ 
+  void initState() {
     super.initState();
     _loadUserInfo();
   }
@@ -36,7 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
-   _saveUserInfo() async {
+  _saveUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('remember_me', _rememberMe);
     if (_rememberMe) {
@@ -54,8 +53,6 @@ class _SignInScreenState extends State<SignInScreen> {
     // Navigasi ke halaman berikutnya jika login berhasil
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +63,8 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               children: [
                 Center(
-                child: Image.asset('images/9.png'),
-              ),
+                  child: Image.asset('images/9.png'),
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -98,38 +95,34 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 50,
                 ),
-               
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text('Remember Me'),
                     Checkbox(
-                  value: _rememberMe,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _rememberMe = newValue!;
-                    });
-                  },
-                ),
-                
-
+                      value: _rememberMe,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _rememberMe = newValue!;
+                        });
+                      },
+                    ),
                   ],
-
                 ),
-                
                 ElevatedButton(
-                  onPressed: ()async{ 
+                  onPressed: () async {
                     try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    );
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    );
-                  } catch (error) {
-                    print(error.toString());
-                  }
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                      );
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
+                      );
+                    } catch (error) {
+                      print(error.toString());  
+                    }
                   },
                   child: const Text('Sign In'),
                   style: ButtonStyle(
@@ -144,8 +137,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       Navigator.pushNamed(context, '/signup');
                     },
                     child: const Text('Belum punya akun? Daftar di sini.')),
-
-                    
               ],
             ),
           ),
