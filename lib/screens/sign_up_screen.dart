@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_jarum/main.dart';
+import 'package:project_jarum/screens/profile_screen.dart';
 import 'package:project_jarum/screens/sign_in_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,8 +15,12 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final  _emailController = TextEditingController();
+  final  _passwordController = TextEditingController();
+  final  _userName = TextEditingController();
+  final  _fullName = TextEditingController();
+  final  _phoneNumber = TextEditingController();
+  final  _reEnterPassword = TextEditingController();
   bool _rememberMe = false;
 
   @override
@@ -81,6 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
+                  controller: _fullName,
                   decoration: InputDecoration(
                       labelText: "Full Name",
                       border: UnderlineInputBorder(
@@ -93,6 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
+                  controller: _phoneNumber,
                   decoration: InputDecoration(
                       labelText: "Phone Number",
                       border: UnderlineInputBorder(
@@ -105,6 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
+                  controller: _userName,
                   decoration: InputDecoration(
                       labelText: "Username",
                       border: UnderlineInputBorder(
@@ -130,6 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 TextFormField(
+                  controller: _reEnterPassword,
                   decoration: InputDecoration(
                       labelText: "Re-Enter Password",
                       border: UnderlineInputBorder(
@@ -160,21 +170,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    try {
-                      await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      );
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) => const SignInScreen()),
-                      );
-                    } catch (error) {
-                      print(error.toString());
-                    }
-                  },
-                  child: const Text('Sign Up'),
+                      try {
+                  UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  );
+                  
+                  // Simpan data tambahan ke Firestore
+                  await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+                    'email': _emailController.text,
+                    'phoneNumber' : _phoneNumber.text,
+                    'name': _userName.text,
+                    'password' : _passwordController.text
+
+                  });
+
+                  Navigator.pushReplacementNamed(context, '/home');
+                } catch (e) {
+                  print(e);
+                }
+              },
+              child: Text('Sign Up'),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero))),

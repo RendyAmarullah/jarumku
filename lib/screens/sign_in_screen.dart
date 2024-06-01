@@ -118,7 +118,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       );
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
+                            builder: (context) => MainScreen()),
                       );
                     } catch (error) {
                       print(error.toString());  
