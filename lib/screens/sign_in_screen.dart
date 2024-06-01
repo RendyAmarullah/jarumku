@@ -29,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() {
       _rememberMe = prefs.getBool('remember_me') ?? false;
       if (_rememberMe) {
-        _emailController.text = prefs.getString('username') ?? '';
+        _emailController.text = prefs.getString('email') ?? '';
         _passwordController.text = prefs.getString('password') ?? '';
       }
     });
@@ -39,10 +39,10 @@ class _SignInScreenState extends State<SignInScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('remember_me', _rememberMe);
     if (_rememberMe) {
-      prefs.setString('username', _emailController.text);
+      prefs.setString('email', _emailController.text);
       prefs.setString('password', _passwordController.text);
     } else {
-      prefs.remove('username');
+      prefs.remove('email');
       prefs.remove('password');
     }
   }
@@ -71,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                      labelText: "Username",
+                      labelText: "email",
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black, width: 2.0),
                       ),

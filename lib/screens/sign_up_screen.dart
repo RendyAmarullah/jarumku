@@ -28,7 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() {
       _rememberMe = prefs.getBool('remember_me') ?? false;
       if (_rememberMe) {
-        _emailController.text = prefs.getString('username') ?? '';
+        _emailController.text = prefs.getString('email') ?? '';
         _passwordController.text = prefs.getString('password') ?? '';
       }
     });
@@ -38,10 +38,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('remember_me', _rememberMe);
     if (_rememberMe) {
-      prefs.setString('username', _emailController.text);
+      prefs.setString('email', _emailController.text);
       prefs.setString('password', _passwordController.text);
     } else {
-      prefs.remove('username');
+      prefs.remove('email');
       prefs.remove('password');
     }
   }
