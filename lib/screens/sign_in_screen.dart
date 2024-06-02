@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:project_jarum/main.dart';
 import 'package:project_jarum/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -17,12 +18,24 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
+bool _obscureText = true;
+
+  final key = encrypt.Key.fromLength(32);
+  final iv = encrypt.IV.fromLength(16);
+  late encrypt.Encrypter encrypter;
 
   @override
   void initState() {
     super.initState();
+    encrypter = encrypt.Encrypter(encrypt.AES(key));
     _loadUserInfo();
   }
+
+  String encryptPassword(String password) {
+    final encrypted = encrypter.encrypt(password, iv: iv);
+    return encrypted.base64;
+  }
+
 
   _loadUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -83,11 +96,22 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 TextFormField(
                   controller: _passwordController,
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: "Password",
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 2.0),
                     ),
+                    suffixIcon: IconButton( 
+                         icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                      ),
                     fillColor: Colors.white,
                     filled: true,
                   ),
