@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_jarum/service/location_service.dart';
@@ -20,8 +22,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
    Position? _currentPosition;
    bool isSignedIn = true;
     File? _image;
-
   final ImagePicker _picker = ImagePicker();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+   String _currentAddress = 'Mendapatkan alamat...';
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? selectedImage = await _picker.pickImage(source: source);
@@ -54,6 +65,31 @@ Future<void> _launchMaps(double latitude, double longitude) async {
     }
   }
 
+Future<void> _uploadImage() async {
+    if (_image == null) return;
+
+    try {
+     
+      String fileName = 'profiles/${DateTime.now().millisecondsSinceEpoch}.png';
+      UploadTask uploadTask = _storage.ref().child(fileName).putFile(_image!);
+      TaskSnapshot snapshot = await uploadTask;
+
+      String downloadURL = await snapshot.ref.getDownloadURL();
+     
+      await _firestore.collection('users').doc('your_user_id').set({
+        'profile_picture': downloadURL,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile picture uploaded successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload profile picture: $e')),
+      );
+    }
+  }
+
 Future<void> _pickLocation() async {
     final currentPosition = await LocationService.getCurrentPosition();
    
@@ -62,6 +98,62 @@ Future<void> _pickLocation() async {
     
     });
   }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+     
+      return Future.error('Layanan lokasi dinonaktifkan.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Izin lokasi ditolak, tidak dapat melanjutkan
+        return Future.error('Izin lokasi ditolak.');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Izin lokasi ditolak selamanya.');
+    }
+    try {
+      _currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      print('Lokasi gweh saat ini: $_currentPosition');
+      _getAddressFromLatLng(_currentPosition!);
+    } catch (e) {
+      print('Gagal mendapatkan apa ya: $e');
+    }
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        setState(() {
+          _currentAddress = "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
+        });
+        print('Alamat kita cik: $_currentAddress');
+      } else {
+        setState(() {
+          _currentAddress = 'Gagal dapat alamatnay eh elah.';
+        });
+        print('Gagal mendapatkan alamat dari koordinat yang ada.');
+      }
+    } catch (e) {
+      setState(() {
+        _currentAddress = 'Gagal lagi gagal lagi.';
+      });
+      print('Gagal mendapatkan alamat: $e');
+    }
+  }
+
+
   void _showPicker(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -130,32 +222,25 @@ Future<void> _pickLocation() async {
                   
                   ),
                    SizedBox(height: 0),
-            ElevatedButton(
-              onPressed: () => _pickImage(ImageSource.gallery),
-              child: Icon(Icons.camera_alt)
-            ),
-            // ElevatedButton(
-            //   onPressed: () => _pickImage(ImageSource.camera),
-            //   child: Text('Pick Image from Camera'),
-            // ),
-              //     Positioned(
-              // top: 10,
-              // bottom: 0,
-              // right: 10,
-              // child: InkWell(
-              //   onTap: () {
-              //     _showPicker(context);
-              //   },
-              //   child: CircleAvatar(
-              //     radius: 20,
-              //     backgroundColor: Colors.white,
-              //     child: Icon(
-              //       Icons.edit,
-              //       color: Colors.black,
-              //     ),
-              //   ),
-              // ),
-              //     ),
+           
+                  Positioned(
+              top: 10,
+              bottom: 0,
+              right: 10,
+              child: InkWell(
+                onTap: () {
+                  _showPicker(context);
+                },
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+                  ),
                    Center(
                      child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
@@ -243,36 +328,7 @@ Future<void> _pickLocation() async {
             ),
                      ),
                    ),
-            //        Center(
-            //          child: Container(
-            //           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            // margin: EdgeInsets.all(16.0),
-            // decoration: BoxDecoration(
-            //   color: Colors.white,
-            //  border: Border(
-            //     bottom: BorderSide(color: Colors.black, width: 2.0),
-            //   ),
-            // ),
-            //            child: Row(
-            //    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //    mainAxisSize: MainAxisSize.min,
-            //   children: [
-            //     SizedBox(width: 10.0),
-            //     Text(
-                  
-            //       '${userData['password']}',
-            //       style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            //     ),
-            //     Spacer(),
-            //     Icon(
-            //       Icons.lock,
-            //       color: Colors.black,
-            //       size: 30.0,
-            //     ),
-            //   ],
-            // ),
-            //          ),
-            //        ),
+          
                    Center(
                      child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
@@ -286,12 +342,11 @@ Future<void> _pickLocation() async {
                        child: Row(
                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 SizedBox(width: 10.0),
-                
-                Text('LAT: ${_currentPosition?.latitude ?? ""}'),
-                Text('LNG: ${_currentPosition?.longitude ?? ""}'),
-
+                if(_currentPosition != null)
+             
+                Expanded(child: Text(_currentAddress)),
                 Spacer(),
                 IconButton(
             icon: Icon(Icons.map),
@@ -311,8 +366,14 @@ Future<void> _pickLocation() async {
                 ],
               ),
             ),
+            
           );
+          
         },
+      ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: _uploadImage,
+        child: Icon(Icons.upload),
       ),
     );
   }
